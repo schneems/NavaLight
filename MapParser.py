@@ -203,4 +203,4 @@ class navamap:
         return road(name, self.data[0][name][1], objects)
     def getobjectdata(self, idnum):
         "Returns an object instance of the id specified."
-        return roadobject(self.data[1][idnum][0], self.data[1][idnum][1])
+        return roadobject(self.data[1][idnum][1], self.data[1][idnum][0])
