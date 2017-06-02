@@ -94,82 +94,83 @@ class object:
         self.type = type
         self.connect = connected
     def getinstruction(self, inroad, outroad):
+        "Gets the instruction from one road to another. Specify the roads with IDs."
         if self.type == "streetswitch":
-            return "Continue onto renamed road " + outroad
+            return "Continue onto renamed road " + self.connect[self.connect[outroad]]
         elif self.type == "rtjunction":
-            if inroad == self.connect[0]:
-                if outroad == self.connect[1]:
-                    return "Continue ahead onto " + outroad
+            if self.connect[inroad] == self.connect[0]:
+                if self.connect[outroad] == self.connect[1]:
+                    return "Continue ahead onto " + self.connect[outroad]
                 else:
-                    return "Turn right onto " + outroad
-            elif inroad == self.connect[1]:
-                if outroad == self.connect[0]:
-                    return "Continue ahead onto " + outroad
+                    return "Turn right onto " + self.connect[outroad]
+            elif self.connect[inroad] == self.connect[1]:
+                if self.connect[outroad] == self.connect[0]:
+                    return "Continue ahead onto " + self.connect[outroad]
                 else:
-                    return "Turn left onto " + outroad
+                    return "Turn left onto " + self.connect[outroad]
             else:
-                if outroad == self.connect[0]:
-                    return "Turn left onto " + outroad
+                if self.connect[outroad] == self.connect[0]:
+                    return "Turn left onto " + self.connect[outroad]
                 else:
-                    return "Turn right onto " + outroad
+                    return "Turn right onto " + self.connect[outroad]
         elif self.type == "ltjunction":
-            if inroad == self.connect[0]:
-                if outroad == self.connect[1]:
-                    return "Turn right onto " + outroad
+            if self.connect[inroad] == self.connect[0]:
+                if self.connect[outroad] == self.connect[1]:
+                    return "Turn right onto " + self.connect[outroad]
                 else:
-                    return "Turn left onto " + outroad
-            elif inroad == self.connect[1]:
-                if outroad == self.connect[0]:
-                    return "Turn left onto " + outroad
+                    return "Turn left onto " + self.connect[outroad]
+            elif self.connect[inroad] == self.connect[1]:
+                if self.connect[outroad] == self.connect[0]:
+                    return "Turn left onto " + self.connect[outroad]
                 else:
-                    return "Continue ahead onto " + outroad
+                    return "Continue ahead onto " + self.connect[outroad]
             else:
-                if outroad == self.connect[0]:
-                    return "Turn right onto " + outroad
+                if self.connect[outroad] == self.connect[0]:
+                    return "Turn right onto " + self.connect[outroad]
                 else:
-                    return "Continue ahead onto " + outroad
+                    return "Continue ahead onto " + self.connect[outroad]
         elif self.type == "xjunction":
-            if inroad == self.connect[0]:
-                if outroad == self.connect[1]:
-                    return "Turn right onto " + outroad
-                elif outroad == self.connect[2]:
-                    return "Turn left onto " + outroad
+            if self.connect[inroad] == self.connect[0]:
+                if self.connect[outroad] == self.connect[1]:
+                    return "Turn right onto " + self.connect[outroad]
+                elif self.connect[outroad] == self.connect[2]:
+                    return "Turn left onto " + self.connect[outroad]
                 else:
-                    return "Continue ahead onto " + outroad
-            elif inroad == self.connect[1]:
-                if outroad == self.connect[0]:
-                    return "Turn left onto " + outroad
-                elif outroad == self.connect[2]:
-                    return "Continue ahead onto " + outroad
+                    return "Continue ahead onto " + self.connect[outroad]
+            elif self.connect[inroad] == self.connect[1]:
+                if self.connect[outroad] == self.connect[0]:
+                    return "Turn left onto " + self.connect[outroad]
+                elif self.connect[outroad] == self.connect[2]:
+                    return "Continue ahead onto " + self.connect[outroad]
                 else:
-                    return "Turn right onto " + outroad
-            elif inroad == self.connect[2]:
-                if outroad == self.connect[0]:
-                    return "Turn right onto " + outroad
-                elif outroad == self.connect[1]:
-                    return "Continue ahead onto " + outroad
+                    return "Turn right onto " + self.connect[outroad]
+            elif self.connect[inroad] == self.connect[2]:
+                if self.connect[outroad] == self.connect[0]:
+                    return "Turn right onto " + self.connect[outroad]
+                elif self.connect[outroad] == self.connect[1]:
+                    return "Continue ahead onto " + self.connect[outroad]
                 else:
-                    return "Turn left onto " + outroad
+                    return "Turn left onto " + self.connect[outroad]
             else:
-                if outroad == self.connect[0]:
-                    return "Continue ahead onto " + outroad
-                elif outroad == self.connect[1]:
-                    return "Turn left onto " + outroad
+                if self.connect[outroad] == self.connect[0]:
+                    return "Continue ahead onto " + self.connect[outroad]
+                elif self.connect[outroad] == self.connect[1]:
+                    return "Turn left onto " + self.connect[outroad]
                 else:
-                    return "Turn right onto " + outroad
+                    return "Turn right onto " + self.connect[outroad]
         elif self.type == "roundabout":
-            i = self.connect.index(inroad)
+            i = self.connect.index(self.connect[inroad])
             e = 0
-            while not self.connect[i] == outroad:
+            while not self.connect[i] == self.connect[outroad]:
                 e += 1
                 i += 1
                 if i == len(self.connect):
                     i = 0
             return "Enter roundabout and take exit " + e
         elif self.type == "motorjunction":
-            return "Exit left onto " + outroad
+            return "Exit left onto " + self.connect[outroad]
         else:
-            return "Cross the level crossing onto " + outroad
+            return "Cross the level crossing onto " + self.connect[outroad]
 
 class road:
     "A single road."
