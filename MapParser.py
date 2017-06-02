@@ -88,10 +88,10 @@ def savedata(file, data):
 #
 #                     Street 1 --|-|-- Street 2
 
-class object:
+class roadobject:
     "A junction or feature."
-    def __init__(self, type, connected):
-        self.type = type
+    def __init__(self, objecttype, connected):
+        self.type = objecttype
         self.connect = connected
     def getinstruction(self, inroad, outroad):
         "Gets the instruction from one road to another. Specify the roads with IDs."
@@ -174,9 +174,9 @@ class object:
 
 class road:
     "A single road."
-    def __init__(self, name, type, objects):
+    def __init__(self, name, roadtype, objects):
         self.name = name
-        self.type = type
+        self.type = roadtype
         self.objects = objects
 
 class navamap:
@@ -198,9 +198,9 @@ class navamap:
     def getroaddata(self, name):
         "Returns a road instance of the name specified."
         objects = list()
-        for id in self.data[0][name][0]:
-            objects += self.getobjectdata(id)
+        for idnum in self.data[0][name][0]:
+            objects += self.getobjectdata(idnum)
         return road(name, self.data[0][name][1], objects)
-    def getobjectdata(self, id):
+    def getobjectdata(self, idnum):
         "Returns an object instance of the id specified."
-        return object(self.data[1][id][0], self.data[1][id][1])
+        return roadobject(self.data[1][idnum][0], self.data[1][idnum][1])
