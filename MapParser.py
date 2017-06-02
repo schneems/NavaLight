@@ -199,7 +199,7 @@ class navamap:
         "Returns a road instance of the name specified."
         objects = list()
         for idnum in self.data[0][name][0]:
-            objects += self.getobjectdata(idnum)
+            objects.append(self.getobjectdata(idnum))
         return road(name, self.data[0][name][1], objects)
     def getobjectdata(self, idnum):
         "Returns an object instance of the id specified."
