@@ -45,11 +45,17 @@ def savedata(file, data):
 #
 #                     Street 1 ---O--- Street 2
 #
-#                 T - Junctions (tjunction)
+#                 Right T - Junctions (rtjunction)
 #
 #                     Street 1 ---O--- Street 2
 #                                 |
 #                              Street 3
+#
+#                 Left T - Junctions (ltjunction)
+#
+#                              Street 1
+#                                 |
+#                     Street 2 ---O--- Street 3
 #
 #                 X - Junctions (xjunction)
 #
@@ -82,14 +88,105 @@ def savedata(file, data):
 #
 #                     Street 1 --|-|-- Street 2
 
+class object:
+    "A junction or feature."
+    def __init__(self, type, connected):
+        self.type = type
+        self.connect = connected
+    def getinstruction(self, inroad, outroad):
+        if self.type == "streetswitch":
+            return "Continue onto renamed road " + outroad
+        elif self.type == "rtjunction":
+            if inroad == self.connect[0]:
+                if outroad == self.connect[1]:
+                    return "Continue ahead onto " + outroad
+                else:
+                    return "Turn right onto " + outroad
+            elif inroad == self.connect[1]:
+                if outroad == self.connect[0]:
+                    return "Continue ahead onto " + outroad
+                else:
+                    return "Turn left onto " + outroad
+            else:
+                if outroad == self.connect[0]:
+                    return "Turn left onto " + outroad
+                else:
+                    return "Turn right onto " + outroad
+        elif self.type == "ltjunction":
+            if inroad == self.connect[0]:
+                if outroad == self.connect[1]:
+                    return "Turn right onto " + outroad
+                else:
+                    return "Turn left onto " + outroad
+            elif inroad == self.connect[1]:
+                if outroad == self.connect[0]:
+                    return "Turn left onto " + outroad
+                else:
+                    return "Continue ahead onto " + outroad
+            else:
+                if outroad == self.connect[0]:
+                    return "Turn right onto " + outroad
+                else:
+                    return "Continue ahead onto " + outroad
+        elif self.type == "xjunction":
+            if inroad == self.connect[0]:
+                if outroad == self.connect[1]:
+                    return "Turn right onto " + outroad
+                elif outroad == self.connect[2]:
+                    return "Turn left onto " + outroad
+                else:
+                    return "Continue ahead onto " + outroad
+            elif inroad == self.connect[1]:
+                if outroad == self.connect[0]:
+                    return "Turn left onto " + outroad
+                elif outroad == self.connect[2]:
+                    return "Continue ahead onto " + outroad
+                else:
+                    return "Turn right onto " + outroad
+            elif inroad == self.connect[2]:
+                if outroad == self.connect[0]:
+                    return "Turn right onto " + outroad
+                elif outroad == self.connect[1]:
+                    return "Continue ahead onto " + outroad
+                else:
+                    return "Turn left onto " + outroad
+            else:
+                if outroad == self.connect[0]:
+                    return "Continue ahead onto " + outroad
+                elif outroad == self.connect[1]:
+                    return "Turn left onto " + outroad
+                else:
+                    return "Turn right onto " + outroad
+        elif self.type == "roundabout":
+            i = self.connect.index(inroad)
+            e = 0
+            while not self.connect[i] == outroad:
+                e += 1
+                i += 1
+                if i == len(self.connect):
+                    i = 0
+            return "Enter roundabout and take exit " + e
+        elif self.type == "motorjunction":
+            return "Exit left onto " + outroad
+        else:
+            return "Cross the level crossing onto " + outroad
+
+class road:
+    "A single road."
+    def __init__(self, name, type, objects):
+        self.name = name
+        self.type = type
+        self.objects = objects
+
 class navamap:
+    "An entire map."
     def __init__(self, file):
         self.file = file
         if os.path.exists(file):
             self.data = getdata(self.file)
         else:
             self.data = [dict(), list()]
-    def addroad(self, name, roadtype, connected=list()):
+    def addroad(self, name, roadtype, connected):
         "Creates a street entry."
         self.data[0][name] = [connected, roadtype]
         savedata(self.file, self.data)
@@ -97,3 +194,12 @@ class navamap:
         "Creates a junction or feature entry."
         self.data[1].append([connected, objecttype])
         savedata(self.file, self.data)
+    def getroaddata(self, name):
+        "Returns a road instance of the name specified."
+        objects = list()
+        for id in self.data[0][name][0]:
+            objects += self.getobjectdata(id)
+        return road(name, self.data[0][name][1], objects)
+    def getobjectdata(self, id):
+        "Returns an object instance of the id specified."
+        return object(self.data[1][id][0], self.data[1][id][1])
